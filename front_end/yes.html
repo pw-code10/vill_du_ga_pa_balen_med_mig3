@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Tangerine&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎉🎉</title>
+    <style>
+        body{
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            font-family: "Pinyon Script", cursive, Arial, sans-serif;
+            font-weight: 400;
+            font-style: normal;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            overflow: hidden;
+            font-size: 30px;
+            animation: fadeIn 1s ease-in-out;
+        }
+        a {
+            text-decoration: none;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            position: absolute;
+            top: 90%;
+            font-size: medium;
+        }
+        #pausebutton{
+          position: fixed;
+          bottom: 20px;
+          left: 20px;
+          background-color: #ff6483;
+          color: white;
+          border: none;
+          border-radius: 50%;
+          width: 50px;
+          height: 50px;
+          font-size: 22px;
+          cursor: pointer;
+          box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+          transition: transform 0.2s, background-color 0.2s;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          animation: fadeIn 1s ease-in-out; 
+        }
+        #pausebutton:hover {
+          transform: scale(1.1);
+          background-color: #ff4b6e;
+        }
+         @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+
+            }
+
+        }
+    </style>
+</head>
+<body>
+    <h1>Yeey! 🥳🥳</h1>
+    <div id="audiocon">
+     <audio autoplay loop id="happyaudio">
+        <source src="happy musik.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+      </audio>
+  </div>
+    <a href="index.html">Tillbaka</a>
+    <button id="pausebutton" onclick="togglemusic()">⏸️</button>
+
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script>
+  // Denna funktion körs automatiskt så fort sidan har laddats
+  window.onload = function() {
+    // Ett stort konfettiregn som varar i cirka 3 sekunder
+    var duration = 5 * 1000;
+    var animationEnd = Date.now() + duration;
+    var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+    function randomInRange(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    var interval = setInterval(function() {
+      var timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) {
+        return clearInterval(interval);
+      }
+
+      var particleCount = 50 * (timeLeft / duration);
+      // Skjuter konfetti från två olika sidor
+      confetti(Object.assign({}, defaults, { 
+        particleCount,
+        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
+      }));
+      confetti(Object.assign({}, defaults, { 
+        particleCount,
+        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
+      }));
+    }, 250);
+  };
+  let aud = document.getElementById('happyaudio');
+    aud.volume = 0.18;
+
+  let isPlaying = true;
+  function togglemusic(){
+    const music = document.getElementById('happyaudio');
+    const btn = document.getElementById('pausebutton');
+    if (isPlaying) {
+    music.pause();
+    btn.textContent = '🎵';
+  } else {
+    music.play();
+    btn.textContent = '⏸️';
+  }
+  isPlaying = !isPlaying;
+  }
+</script>
+
+</body>
+</html>

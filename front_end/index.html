@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bal?</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Pinyon+Script&family=Tangerine:wght@400;700&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: "Pinyon Script", cursive, Arial, sans-serif;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      overflow: hidden;
+      font-size: 30px;
+    }
+
+    .container {
+      background: white;
+      padding: 40px;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    #askungencitat {
+      position: absolute;
+      top: 3%;
+      right: 2%;
+      font-size: 28px;
+      rotate: 10deg;
+      font-family: "Tangerine", cursive;
+      animation: fadeIn 1s ease-in-out;  
+    }
+
+    /* Kombinerade knapp-stilar för renare CSS */
+    .btn {
+      display: inline-block;
+      padding: 12px 20px;
+      margin: 10px;
+      font-size: 20px;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-family: "Lora", serif;
+      font-weight: 700;
+      border: none;
+      text-decoration: none;
+    }
+
+    #yesBtn {
+      background-color: #ff4b6e;
+      color: white;
+    }
+
+    #noBtn {
+      background-color: #f44336;
+      color: white;
+      position: absolute;
+    }
+
+    #musicbutton {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background-color: #ff6483;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 22px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      transition: transform 0.2s, background-color 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 1s ease-in-out; 
+    }
+
+    #musicbutton:hover {
+      transform: scale(1.1);
+      background-color: #ff4b6e;
+    }
+   
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+
+<body>
+  <h2 id="askungencitat">Nåja, vad är väl en bal på slottet?<br> Den kan vara dötrist och långtråkig och alldeles…<br> alldeles underbar! <br>-Askungen</h2>
+  <div class="container">
+    <h1>Vill du gå på Balen med mig?</h1>
+    <a href="#" id="yesBtn" class="btn">Ja</a>
+    <button id="noBtn" class="btn">Nej</button>
+  </div>
+  
+  <audio id="bg-music" loop>
+    <source src="A Million Dreams.mp3" type="audio/mpeg">
+  </audio>
+  <button id="musicbutton" onclick="toggleMusic()">🎵</button>
+
+  <script>
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    //let hasAnsweredNo = false; // Spärr för att förhindra spam
+
+    // --- API Kommunikation ---
+    const fetchAnswer = async (answer) => {
+      try {
+        await fetch('/api/answer', {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ "answer": answer }) 
+        });
+      } catch (error) {
+        console.error("Fel vid skickande av svar:", error);
+      }
+    };
+
+    // --- Logik för "Ja" ---
+    yesBtn.addEventListener("click", async (e) => {
+      e.preventDefault(); // Stoppar webbläsaren från att byta sida direkt
+      await fetchAnswer('Ja'); // Väntar på att svaret skickas till servern
+      window.location.href = "yes.html"; // BYTER SIDA HÄR ISTÄLLET
+    });
+
+    // --- Logik för "Nej" ---
+    function handleNoInteraction(e) {
+      if (e.type === "touchstart") e.preventDefault(); // Förhindrar dubbelklick på mobiler
+      moveButton();
+      fetchAnswer('Nej')
+      // Skickar bara "Nej" till servern en gång, även om de jagar knappen länge
+      //if (!hasAnsweredNo) {
+      //  fetchAnswer('Nej');
+      //  hasAnsweredNo = true;
+      //}
+    }
+
+    function moveButton() {
+      const padding = 20;
+      const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+      const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+
+      const randomX = Math.random() * maxX;
+      const randomY = Math.random() * maxY;
+
+      noBtn.style.left = randomX + "px";
+      noBtn.style.top = randomY + "px";
+    }
+
+    noBtn.addEventListener("touchstart", handleNoInteraction);
+    noBtn.addEventListener("mouseover", handleNoInteraction);
+
+    // --- Musiklogik ---
+    let isPlaying = false;
+    function toggleMusic() {
+      const music = document.getElementById('bg-music');
+      const btn = document.getElementById('musicbutton');
+      if (isPlaying) {
+        music.pause();
+        btn.textContent = '🎵';
+      } else {
+        music.play();
+        btn.textContent = '⏸️';
+      }
+      isPlaying = !isPlaying;
+    }
+  </script>
+</body>
+</html>
